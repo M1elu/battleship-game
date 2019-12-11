@@ -9,26 +9,11 @@ import java.util.stream.IntStream;
 
 public class PlayerBoard {
 
-    public static PlayerBoard setup(BoardConfiguration boardConfiguration) throws InstantiationException {
-        if (boardConfiguration == null)
+    public static PlayerBoard setup(BoardConfiguration boardConfiguration) {
+        if (boardConfiguration == null) {
             boardConfiguration = BoardConfiguration.getDefault();
-
-        //validate setup
-        // check if ships are in range of board
-        // check if ships are in one line without breaks
-
-        //
-        // check board constraints
-        // check if ship counts is ok
-        // check if spaces between ships are ok
-
-
-        boolean isValid = true;
-
-        if (!isValid)
-            throw new InstantiationException("Cannot initialize board with given setup.");
-
-        return new PlayerBoard(boardConfiguration.getShips());
+        }
+        return new PlayerBoard(boardConfiguration);
     }
 
     private List<Ship> battleships;
@@ -40,40 +25,39 @@ public class PlayerBoard {
         return copy;
     }
 
-    public PlayerBoard(List<Ship> battleships, BoardConstraints boardConstraints) {
-        this(boardConstraints);
-        battleships.stream()
+    private PlayerBoard(BoardConfiguration boardConfiguration) {
+        stateBoard = new FieldState[boardConfiguration.getBoardConstraints().getSizeX()][boardConfiguration.getBoardConstraints().getSizeY()];
+        Arrays.stream(stateBoard).forEach(s -> Arrays.fill(s, FieldState.Idle));
+        boardConfiguration.getShips().stream()
                 .flatMap(b -> b.getCoordinates().stream())
                 .forEach(coordinate ->
-                        stateBoard[coordinate.x][coordinate.y] = FieldState.Hit
+                        stateBoard[coordinate.getX()][coordinate.getY()] = FieldState.Hit
                 );
-        this.battleships = battleships;
-    }
 
-    private PlayerBoard(BoardConstraints boardConstraints) {
-        stateBoard = new FieldState[boardConstraints.getSizeX()][boardConstraints.getSizeY()];
-        Arrays.stream(stateBoard).forEach(s -> Arrays.fill(s, FieldState.Idle));
+        this.battleships = boardConfiguration.getShips();
     }
 
     public void shoot(Coordinate coordinate) {
         Optional<Ship> ship = battleships.stream().filter(s ->
-                s.getCoordinates().stream().anyMatch(c -> c.x == coordinate.x && c.y == coordinate.y)
+                s.getCoordinates().stream().anyMatch(
+                        c -> c.getX() == coordinate.getX() && c.getY() == coordinate.getY()
+                )
         ).findAny();
         if (ship.isPresent()) {
-            ship.get().hit(coordinate);
+            ship.get().hit();
             if (ship.get().isSunk()) {
                 markShipAsSunk(ship.get());
             } else {
-                stateBoard[coordinate.x][coordinate.y] = FieldState.Hit;
+                stateBoard[coordinate.getX()][coordinate.getY()] = FieldState.Hit;
             }
         } else {
-            stateBoard[coordinate.x][coordinate.y] = FieldState.Miss;
+            stateBoard[coordinate.getX()][coordinate.getY()] = FieldState.Miss;
         }
     }
 
     private void markShipAsSunk(Ship ship) {
         ship.getCoordinates().forEach(
-                c -> stateBoard[c.x][c.y] = FieldState.Sunk
+                c -> stateBoard[c.getX()][c.getY()] = FieldState.Sunk
         );
     }
 

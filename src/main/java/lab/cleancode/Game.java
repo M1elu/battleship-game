@@ -79,16 +79,18 @@ public class Game {
         for (Ship ship : ships) {
             boolean isCoordinateCorrect = false;
             while (!isCoordinateCorrect) {
+                System.out.println("Do you want place ship horizontally(true) or vertically(false)?");
+                boolean isPlacedHorizontal = reader.nextBoolean();
                 System.out.println("Enter x coordinate for " + ship.getName());
                 int xCoordinate = reader.nextInt();
                 System.out.println("Enter y coordinate for " + ship.getName());
                 int yCoordinate = reader.nextInt();
-                System.out.println("Do you want place ship horizontally or vertically?");
-                boolean isPlacedHorizontal = reader.nextBoolean();
                 Coordinate startCoordinate = new Coordinate(xCoordinate, yCoordinate);
                 isCoordinateCorrect = ship.canSetCoordinates(startCoordinate, isPlacedHorizontal, boardConfiguration.getBoardConstraints());
                 if (isCoordinateCorrect) {
                     ship.setCoordinates(startCoordinate, isPlacedHorizontal);
+                } else {
+                    System.out.println("It's not possible to place ship this way. Wrong coordinates!");
                 }
             }
         }

@@ -36,14 +36,6 @@ public class BoardConfiguration {
     private BoardConstraints boardConstraints;
     private List<Ship> ships;
 
-    public BoardConstraints getBoardConstraints() {
-        return boardConstraints;
-    }
-
-    public List<Ship> getShips() {
-        return ships;
-    }
-
     public Boolean canAddShips(List<Ship> newShips) {
         boolean isAnyShipTooLong = newShips.stream().anyMatch(s -> s.getLength() > boardConstraints.getSizeX() || s.getLength() > boardConstraints.getSizeY());
         if (isAnyShipTooLong) return false;
@@ -57,14 +49,18 @@ public class BoardConfiguration {
         if (canAddShips(newShips)) ships.addAll(newShips);
     }
 
+    public BoardConstraints getBoardConstraints() {
+        return boardConstraints;
+    }
+
+    public List<Ship> getShips() {
+        return ships;
+    }
+
 //    private int minimumDistanceBetweenShips;
 //
 //    public int getMinimumDistanceBetweenShips() {
 //        return minimumDistanceBetweenShips;
-//    }
-
-//    public int getShipsCountLimit() {
-//        return shipCounts.stream().mapToInt(Ship::getVerticalLength).sum();
 //    }
 }
 

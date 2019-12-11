@@ -30,14 +30,14 @@ public abstract class Ship implements Cloneable {
     }
 
     public boolean canSetCoordinates(Coordinate startCoordinate, boolean isPlacedHorizontal, BoardConstraints boardConstraints) {
-        if (startCoordinate.x > boardConstraints.getSizeX()
-                || startCoordinate.y > boardConstraints.getSizeY()) {
+        if (startCoordinate.getX() > boardConstraints.getSizeX()
+                || startCoordinate.getY() > boardConstraints.getSizeY()) {
             return false;
         }
         if (isPlacedHorizontal) {
-            return startCoordinate.y <= boardConstraints.getSizeY() - getLength();
+            return startCoordinate.getY() <= boardConstraints.getSizeY() - getLength();
         } else {
-            return startCoordinate.x <= boardConstraints.getSizeX() - getLength();
+            return startCoordinate.getX() <= boardConstraints.getSizeX() - getLength();
         }
     }
 
@@ -45,7 +45,7 @@ public abstract class Ship implements Cloneable {
         return length;
     }
 
-    public void hit(Coordinate coordinate) {
+    public void hit() {
         this.hitCount++;
     }
 
@@ -61,13 +61,13 @@ public abstract class Ship implements Cloneable {
         newCoordinates.add(startCoordinate);
         for (int i = 1; i <= getLength() - 1; i++) {
             if (isHorizontal) {
-                int xCoordinate = startCoordinate.x;
-                int yCoordinate = startCoordinate.y + i;
+                int xCoordinate = startCoordinate.getX();
+                int yCoordinate = startCoordinate.getY() + i;
                 Coordinate nextCoordinate = new Coordinate(xCoordinate, yCoordinate);
                 newCoordinates.add(nextCoordinate);
             } else {
-                int xCoordinate = startCoordinate.x + i;
-                int yCoordinate = startCoordinate.y;
+                int xCoordinate = startCoordinate.getX() + i;
+                int yCoordinate = startCoordinate.getY();
                 Coordinate nextCoordinate = new Coordinate(xCoordinate, yCoordinate);
                 newCoordinates.add(nextCoordinate);
             }

@@ -17,8 +17,4 @@ public class BoardConstraints {
     public int getSizeY() {
         return sizeY;
     }
-
-    public void setSizeY(int sizeY) {
-        this.sizeY = sizeY;
-    }
 }
