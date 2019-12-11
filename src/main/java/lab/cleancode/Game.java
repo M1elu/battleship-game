@@ -15,13 +15,13 @@ public class Game {
     public void start() {
         try {
             PlayerBoard playerBoard = setup();
-            displayBoard(playerBoard);
+            System.out.println("State board:");
+            displayBoard(playerBoard.getStateBoard());
             System.out.println("Let's play!");
             while (playerBoard.getNumberOfBattleshipsLeft() > 0) {
                 play(playerBoard);
             }
-            end();
-
+            end(playerBoard.getShotBoard());
         } catch (CloneNotSupportedException | InstantiationException e) {
             e.printStackTrace();
         }
@@ -99,13 +99,14 @@ public class Game {
         }
     }
 
-    private void displayBoard(PlayerBoard playerBoard) {
-        FieldState[][] boardState = playerBoard.getBoardState();
-        for (int i = 0; i < boardState.length; i++) {
-            for (int j = 0; j < boardState.length; j++) {
-                FieldState state = boardState[i][j];
+    private void displayBoard(FieldState[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                FieldState state = board[i][j];
                 if (state == FieldState.Idle) {
                     System.out.print("I ");
+                } else if (state == FieldState.Ship) {
+                    System.out.print("S ");
                 } else if (state == FieldState.Miss) {
                     System.out.print("M ");
                 } else if (state == FieldState.Hit) {
@@ -127,10 +128,18 @@ public class Game {
         int yCoordinate = reader.nextInt();
         Coordinate shotCoordinate = new Coordinate(xCoordinate, yCoordinate);
         playerBoard.shoot(shotCoordinate);
+        System.out.println("Shot board");
+        displayBoard(playerBoard.getShotBoard());
     }
 
-    private void end() {
+    private void end(FieldState[][] shotBoard) {
         System.out.println("You sank all ships!");
-        //displayStatistics();
+        ShotStatistics shotStatistics = new ShotStatistics(shotBoard);
+        displayStatistics(shotStatistics);
+    }
+
+    private void displayStatistics(ShotStatistics shotStatistics) {
+        System.out.println("All shots: " + shotStatistics.getAllShotsCount());
+        System.out.println("Missed shots: " + shotStatistics.getMissedShotsCount());
     }
 }

@@ -20,22 +20,30 @@ public class PlayerBoard {
 
     private List<Ship> battleships;
     private FieldState[][] stateBoard;
+    private FieldState[][] shotBoard;
 
-    public FieldState[][] getBoardState() {
+    public FieldState[][] getStateBoard() {
         FieldState[][] copy = new FieldState[stateBoard.length][stateBoard.length];
         IntStream.range(0, stateBoard.length).forEach(i -> copy[i] = Arrays.copyOf(stateBoard[i], stateBoard[i].length));
+        return copy;
+    }
+
+    public FieldState[][] getShotBoard() {
+        FieldState[][] copy = new FieldState[shotBoard.length][shotBoard.length];
+        IntStream.range(0, shotBoard.length).forEach(i -> copy[i] = Arrays.copyOf(shotBoard[i], shotBoard[i].length));
         return copy;
     }
 
     private PlayerBoard(BoardConfiguration boardConfiguration) {
         stateBoard = new FieldState[boardConfiguration.getBoardConstraints().getSizeX()][boardConfiguration.getBoardConstraints().getSizeY()];
         Arrays.stream(stateBoard).forEach(s -> Arrays.fill(s, FieldState.Idle));
+        shotBoard = new FieldState[boardConfiguration.getBoardConstraints().getSizeX()][boardConfiguration.getBoardConstraints().getSizeY()];
+        Arrays.stream(shotBoard).forEach(s -> Arrays.fill(s, FieldState.Idle));
         boardConfiguration.getShips().stream()
                 .flatMap(b -> b.getCoordinates().stream())
                 .forEach(coordinate ->
-                        stateBoard[coordinate.getX()][coordinate.getY()] = FieldState.Hit
+                        stateBoard[coordinate.getX()][coordinate.getY()] = FieldState.Ship
                 );
-
         this.battleships = boardConfiguration.getShips();
     }
 
@@ -48,18 +56,20 @@ public class PlayerBoard {
         if (ship.isPresent()) {
             ship.get().hit();
             if (ship.get().isSunk()) {
-                markShipAsSunk(ship.get());
+                markShipAsSunk(ship.get(), stateBoard);
+                markShipAsSunk(ship.get(), shotBoard);
             } else {
                 stateBoard[coordinate.getX()][coordinate.getY()] = FieldState.Hit;
+                shotBoard[coordinate.getX()][coordinate.getY()] = FieldState.Hit;
             }
         } else {
-            stateBoard[coordinate.getX()][coordinate.getY()] = FieldState.Miss;
+            shotBoard[coordinate.getX()][coordinate.getY()] = FieldState.Miss;
         }
     }
 
-    private void markShipAsSunk(Ship ship) {
-        ship.getCoordinates().forEach(
-                c -> stateBoard[c.getX()][c.getY()] = FieldState.Sunk
+    private void markShipAsSunk(Ship ship, FieldState[][] board) {
+        ship.getCoordinates().forEach(c ->
+                board[c.getX()][c.getY()] = FieldState.Sunk
         );
     }
 
