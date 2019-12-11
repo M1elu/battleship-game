@@ -18,6 +18,7 @@ public class PlayerBoard {
         return new PlayerBoard(boardConfiguration);
     }
 
+    private BoardConstraints constraints;
     private List<Ship> battleships;
     private FieldState[][] stateBoard;
     private FieldState[][] shotBoard;
@@ -35,15 +36,16 @@ public class PlayerBoard {
     }
 
     private PlayerBoard(BoardConfiguration boardConfiguration) {
-        stateBoard = new FieldState[boardConfiguration.getBoardConstraints().getSizeX()][boardConfiguration.getBoardConstraints().getSizeY()];
+        this.stateBoard = new FieldState[boardConfiguration.getBoardConstraints().getSizeX()][boardConfiguration.getBoardConstraints().getSizeY()];
         Arrays.stream(stateBoard).forEach(s -> Arrays.fill(s, FieldState.Idle));
-        shotBoard = new FieldState[boardConfiguration.getBoardConstraints().getSizeX()][boardConfiguration.getBoardConstraints().getSizeY()];
+        this.shotBoard = new FieldState[boardConfiguration.getBoardConstraints().getSizeX()][boardConfiguration.getBoardConstraints().getSizeY()];
         Arrays.stream(shotBoard).forEach(s -> Arrays.fill(s, FieldState.Idle));
         boardConfiguration.getShips().stream()
                 .flatMap(b -> b.getCoordinates().stream())
                 .forEach(coordinate ->
                         stateBoard[coordinate.getX()][coordinate.getY()] = FieldState.Ship
                 );
+        this.constraints = boardConfiguration.getBoardConstraints();
         this.battleships = boardConfiguration.getShips();
     }
 
@@ -75,5 +77,10 @@ public class PlayerBoard {
 
     public int getNumberOfBattleshipsLeft() {
         return (int) battleships.stream().filter(s -> !s.isSunk()).count();
+    }
+
+    public boolean isCoordinateWithinBoard(Coordinate coordinate) {
+        return coordinate.getX() >= 0 && coordinate.getX() <= constraints.getSizeX() - 1
+                && coordinate.getY() >= 0 && coordinate.getY() <= constraints.getSizeY() - 1;
     }
 }

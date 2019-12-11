@@ -82,7 +82,7 @@ public class Game {
         for (Ship ship : ships) {
             boolean isCoordinateCorrect = false;
             while (!isCoordinateCorrect) {
-                System.out.println("Do you want place ship horizontally(true) or vertically(false)?");
+                System.out.println("Do you want place " + ship.getName() + " horizontally(true) or vertically(false)?");
                 boolean isPlacedHorizontal = reader.nextBoolean();
                 System.out.println("Enter x coordinate for " + ship.getName());
                 int xCoordinate = reader.nextInt();
@@ -93,7 +93,7 @@ public class Game {
                 if (isCoordinateCorrect) {
                     ship.setCoordinates(startCoordinate, isPlacedHorizontal);
                 } else {
-                    System.out.println("It's not possible to place ship this way. Wrong coordinates!");
+                    System.out.println("It's not possible to place ship this way. Wrong coordinate!");
                 }
             }
         }
@@ -119,14 +119,21 @@ public class Game {
         }
     }
 
-
     private void play(PlayerBoard playerBoard) {
+        boolean isCoordinateWithinBoard = false;
         Scanner reader = new Scanner(System.in);
-        System.out.println("Enter shot x coordinate");
-        int xCoordinate = reader.nextInt();
-        System.out.println("Enter shot y coordinate");
-        int yCoordinate = reader.nextInt();
-        Coordinate shotCoordinate = new Coordinate(xCoordinate, yCoordinate);
+        Coordinate shotCoordinate = null;
+        while (!isCoordinateWithinBoard) {
+            System.out.println("Enter shot x coordinate");
+            int xCoordinate = reader.nextInt();
+            System.out.println("Enter shot y coordinate");
+            int yCoordinate = reader.nextInt();
+            shotCoordinate = new Coordinate(xCoordinate, yCoordinate);
+            isCoordinateWithinBoard = playerBoard.isCoordinateWithinBoard(shotCoordinate);
+            if (!isCoordinateWithinBoard) {
+                System.out.println("Coordinate out of board!");
+            }
+        }
         playerBoard.shoot(shotCoordinate);
         System.out.println("Shot board");
         displayBoard(playerBoard.getShotBoard());

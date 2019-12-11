@@ -46,7 +46,9 @@ public abstract class Ship implements Cloneable {
     }
 
     public void hit() {
-        this.hitCount++;
+        if (hitCount < length) {
+            this.hitCount++;
+        }
     }
 
     public boolean isSunk() {
