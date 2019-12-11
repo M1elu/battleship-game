@@ -1,6 +1,6 @@
 package lab.cleancode.engine;
 
-public enum GameState{
+public enum GameState {
     Pending,
     Victory,
     Defeat

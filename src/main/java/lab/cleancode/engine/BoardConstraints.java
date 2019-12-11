@@ -1,28 +1,24 @@
 package lab.cleancode.engine;
 
-import java.util.List;
-
-
 public class BoardConstraints {
 
-    public static BoardConstraints getDefault() {
-        BoardConstraints constraints = new BoardConstraints();
-        constraints.minSpaceBetweenShips = 1;
-        constraints.shipSizeCounts = List.of(
-                new ShipSize(4, 1),
-                new ShipSize(3, 2),
-                new ShipSize(2, 3),
-                new ShipSize(1, 4));
+    private int sizeX;
+    private int sizeY;
 
-        return constraints;
-
+    public BoardConstraints(int sizeX, int sizeY) {
+        this.sizeX = sizeX;
+        this.sizeY = sizeY;
     }
 
-    public int minSpaceBetweenShips;
+    public int getSizeX() {
+        return sizeX;
+    }
 
-    public List<ShipSize> shipSizeCounts;
+    public int getSizeY() {
+        return sizeY;
+    }
 
-    public int GetShipsCountLimit() {
-        return shipSizeCounts.stream().mapToInt(s -> s.getSizeY()).sum();
+    public void setSizeY(int sizeY) {
+        this.sizeY = sizeY;
     }
 }
