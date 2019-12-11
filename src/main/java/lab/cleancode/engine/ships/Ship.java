@@ -1,6 +1,6 @@
 package lab.cleancode.engine.ships;
 
-import lab.cleancode.engine.BoardConstraints;
+import lab.cleancode.engine.board.BoardConstraints;
 import lab.cleancode.engine.Coordinate;
 
 import java.util.ArrayList;

@@ -1,6 +1,9 @@
 package lab.cleancode;
 
 import lab.cleancode.engine.*;
+import lab.cleancode.engine.board.BoardConfiguration;
+import lab.cleancode.engine.board.BoardConstraints;
+import lab.cleancode.engine.board.PlayerBoard;
 import lab.cleancode.engine.ships.*;
 
 import java.util.ArrayList;

@@ -1,5 +1,7 @@
-package lab.cleancode.engine;
+package lab.cleancode.engine.board;
 
+import lab.cleancode.engine.Coordinate;
+import lab.cleancode.engine.FieldState;
 import lab.cleancode.engine.ships.Ship;
 
 import java.util.Arrays;

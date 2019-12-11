@@ -1,4 +1,4 @@
-package lab.cleancode.engine;
+package lab.cleancode.engine.board;
 
 public class BoardConstraints {
 
