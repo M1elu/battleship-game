@@ -38,17 +38,15 @@ public class BoardConfiguration {
     }
 
     public boolean canSetCoordinates(List<Coordinate> coordinates) {
-        if (isAnyCoordinateOutOfBoard(coordinates) || isAnyCoordinateAlreadyUsed(coordinates)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !isAnyCoordinateOutOfBoard(coordinates)
+                && !isAnyCoordinateAlreadyUsed(coordinates)
+                && !isAnyAdjacentCoordinateUsed(coordinates);
     }
 
     private boolean isAnyCoordinateOutOfBoard(List<Coordinate> coordinates) {
         return coordinates.stream().anyMatch(coordinate ->
-                coordinate.getX() < 0 && coordinate.getX() > boardConstraints.getSizeX() - 1
-                        && coordinate.getY() < 0 && coordinate.getY() > boardConstraints.getSizeY() - 1
+                coordinate.getX() < 0 || coordinate.getX() > boardConstraints.getSizeX() - 1
+                        || coordinate.getY() < 0 || coordinate.getY() > boardConstraints.getSizeY() - 1
         );
     }
 
@@ -57,6 +55,23 @@ public class BoardConfiguration {
                 s.getCoordinates().stream().anyMatch(c ->
                         coordinates.stream().anyMatch(newC ->
                                 newC.getX() == c.getX() && newC.getY() == c.getY()
+                        )
+                )
+        );
+    }
+
+    private boolean isAnyAdjacentCoordinateUsed(List<Coordinate> coordinates) {
+        return ships.stream().anyMatch(s ->
+                s.getCoordinates().stream().anyMatch(c ->
+                        coordinates.stream().anyMatch(newC ->
+                                (newC.getX() - 1 == c.getX() && newC.getY() == c.getY())
+                                        || (newC.getX() == c.getX() && newC.getY() + 1 == c.getY())
+                                        || (newC.getX() == c.getX() && newC.getY() - 1 == c.getY())
+                                        || (newC.getX() + 1 == c.getX() && newC.getY() == c.getY())
+                                        || (newC.getX() - 1 == c.getX() && newC.getY() - 1 == c.getY())
+                                        || (newC.getX() - 1 == c.getX() && newC.getY() + 1 == c.getY())
+                                        || (newC.getX() + 1 == c.getX() && newC.getY() + 1 == c.getY())
+                                        || (newC.getX() + 1 == c.getX() && newC.getY() - 1 == c.getY())
                         )
                 )
         );
