@@ -1,31 +1,12 @@
 package lab.cleancode.engine.board;
 
-import lab.cleancode.engine.ships.*;
+import lab.cleancode.engine.Coordinate;
+import lab.cleancode.engine.ships.Ship;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BoardConfiguration {
-
-    public static BoardConfiguration getDefault() {
-        List<Ship> ships = List.of(
-                new Carrier(),
-                new Battleship(),
-                new Cruiser(),
-                new Destroyer()
-        );
-        return new BoardConfiguration(new BoardConstraints(10, 10), ships);
-    }
-
-//    public static BoardConfiguration getRandom() {
-//        Random random = new Random();
-//        random.nextInt(10);
-//    }
-
-    public BoardConfiguration(BoardConstraints boardConstraints, List<Ship> ships) {
-        this.boardConstraints = boardConstraints;
-        this.ships = ships;
-    }
 
     public BoardConfiguration(BoardConstraints boardConstraints) {
         this.boardConstraints = boardConstraints;
@@ -54,6 +35,29 @@ public class BoardConfiguration {
 
     public List<Ship> getShips() {
         return ships;
+    }
+
+    public boolean canSetCoordinates(Coordinate startCoordinate, boolean isPlacedHorizontal, int shipLength) {
+        if (startCoordinate.getX() > boardConstraints.getSizeX()
+                || startCoordinate.getY() > boardConstraints.getSizeY()) {
+            return false;
+        }
+        if (isCoordinateAlreadyUsed(startCoordinate)) {
+            return false;
+        }
+        if (isPlacedHorizontal) {
+            return startCoordinate.getY() <= boardConstraints.getSizeY() - shipLength;
+        } else {
+            return startCoordinate.getX() <= boardConstraints.getSizeX() - shipLength;
+        }
+    }
+
+    private boolean isCoordinateAlreadyUsed(Coordinate startCoordinate) {
+        return ships.stream().anyMatch(s ->
+                s.getCoordinates().stream().anyMatch(c ->
+                        c.getX() == startCoordinate.getX() && c.getY() == startCoordinate.getY()
+                )
+        );
     }
 
 //    private int minimumDistanceBetweenShips;

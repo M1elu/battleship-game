@@ -1,6 +1,5 @@
 package lab.cleancode.engine.ships;
 
-import lab.cleancode.engine.board.BoardConstraints;
 import lab.cleancode.engine.Coordinate;
 
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ public abstract class Ship implements Cloneable {
     public Ship(String name, int length) {
         this.name = name;
         this.length = length;
+        this.coordinates = new ArrayList<>();
     }
 
     public String getName() {
@@ -27,18 +27,6 @@ public abstract class Ship implements Cloneable {
 
     public void setCoordinates(Coordinate startCoordinate, Boolean isPlacedHorizontal) {
         this.coordinates = generateCoordinates(startCoordinate, isPlacedHorizontal);
-    }
-
-    public boolean canSetCoordinates(Coordinate startCoordinate, boolean isPlacedHorizontal, BoardConstraints boardConstraints) {
-        if (startCoordinate.getX() > boardConstraints.getSizeX()
-                || startCoordinate.getY() > boardConstraints.getSizeY()) {
-            return false;
-        }
-        if (isPlacedHorizontal) {
-            return startCoordinate.getY() <= boardConstraints.getSizeY() - getLength();
-        } else {
-            return startCoordinate.getX() <= boardConstraints.getSizeX() - getLength();
-        }
     }
 
     public int getLength() {

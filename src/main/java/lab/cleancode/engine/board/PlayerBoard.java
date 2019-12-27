@@ -11,13 +11,6 @@ import java.util.stream.IntStream;
 
 public class PlayerBoard {
 
-    public static PlayerBoard setup(BoardConfiguration boardConfiguration) {
-        if (boardConfiguration == null) {
-            boardConfiguration = BoardConfiguration.getDefault();
-        }
-        return new PlayerBoard(boardConfiguration);
-    }
-
     private BoardConstraints constraints;
     private List<Ship> battleships;
     private FieldState[][] stateBoard;
@@ -35,7 +28,11 @@ public class PlayerBoard {
         return copy;
     }
 
-    private PlayerBoard(BoardConfiguration boardConfiguration) {
+    public BoardConstraints getConstraints() {
+        return constraints;
+    }
+
+    public PlayerBoard(BoardConfiguration boardConfiguration) {
         this.stateBoard = new FieldState[boardConfiguration.getBoardConstraints().getSizeX()][boardConfiguration.getBoardConstraints().getSizeY()];
         Arrays.stream(stateBoard).forEach(s -> Arrays.fill(s, FieldState.Idle));
         this.shotBoard = new FieldState[boardConfiguration.getBoardConstraints().getSizeX()][boardConfiguration.getBoardConstraints().getSizeY()];
