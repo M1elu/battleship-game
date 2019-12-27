@@ -80,4 +80,9 @@ public class PlayerBoard {
         return coordinate.getX() >= 0 && coordinate.getX() <= constraints.getSizeX() - 1
                 && coordinate.getY() >= 0 && coordinate.getY() <= constraints.getSizeY() - 1;
     }
+
+    public boolean isCoordinateAlreadyHit(Coordinate coordinate) {
+        FieldState fieldState = stateBoard[coordinate.getX()][coordinate.getY()];
+        return fieldState == FieldState.Hit || fieldState == FieldState.Sunk || fieldState == FieldState.Miss;
+    }
 }

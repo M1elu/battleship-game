@@ -83,8 +83,8 @@ public class Game {
         Scanner reader = new Scanner(System.in);
         List<Ship> ships = boardConfiguration.getShips();
         for (Ship ship : ships) {
-            boolean isCoordinateCorrect = false;
-            while (!isCoordinateCorrect) {
+            boolean areCoordinatesCorrect = false;
+            while (!areCoordinatesCorrect) {
                 System.out.println("Do you want place " + ship.getName() + " horizontally(true) or vertically(false)?");
                 boolean isPlacedHorizontal = reader.nextBoolean();
                 System.out.println("Enter x coordinate for " + ship.getName());
@@ -92,14 +92,34 @@ public class Game {
                 System.out.println("Enter y coordinate for " + ship.getName());
                 int yCoordinate = reader.nextInt();
                 Coordinate startCoordinate = new Coordinate(xCoordinate, yCoordinate);
-                isCoordinateCorrect = boardConfiguration.canSetCoordinates(startCoordinate, isPlacedHorizontal, ship.getLength());
-                if (isCoordinateCorrect) {
-                    ship.setCoordinates(startCoordinate, isPlacedHorizontal);
+                ArrayList<Coordinate> coordinates = generateCoordinates(startCoordinate, isPlacedHorizontal, ship.getLength());
+                areCoordinatesCorrect = boardConfiguration.canSetCoordinates(coordinates);
+                if (areCoordinatesCorrect) {
+                    ship.setCoordinates(coordinates);
                 } else {
                     System.out.println("It's not possible to place ship this way. Wrong coordinate!");
                 }
             }
         }
+    }
+
+    private ArrayList<Coordinate> generateCoordinates(Coordinate startCoordinate, boolean isPlacedHorizontal, int shipLength) {
+        ArrayList<Coordinate> newCoordinates = new ArrayList<>();
+        newCoordinates.add(startCoordinate);
+        for (int i = 1; i <= shipLength - 1; i++) {
+            if (isPlacedHorizontal) {
+                int xCoordinate = startCoordinate.getX();
+                int yCoordinate = startCoordinate.getY() + i;
+                Coordinate nextCoordinate = new Coordinate(xCoordinate, yCoordinate);
+                newCoordinates.add(nextCoordinate);
+            } else {
+                int xCoordinate = startCoordinate.getX() + i;
+                int yCoordinate = startCoordinate.getY();
+                Coordinate nextCoordinate = new Coordinate(xCoordinate, yCoordinate);
+                newCoordinates.add(nextCoordinate);
+            }
+        }
+        return newCoordinates;
     }
 
     private void displayBoard(FieldState[][] board, BoardConstraints constraints) {
@@ -124,17 +144,22 @@ public class Game {
 
     private void play(PlayerBoard playerBoard) {
         boolean isCoordinateWithinBoard = false;
+        boolean isCoordinateAlreadyHit = true;
         Scanner reader = new Scanner(System.in);
         Coordinate shotCoordinate = null;
-        while (!isCoordinateWithinBoard) {
+        while (!isCoordinateWithinBoard || isCoordinateAlreadyHit) {
             System.out.println("Enter shot x coordinate");
             int xCoordinate = reader.nextInt();
             System.out.println("Enter shot y coordinate");
             int yCoordinate = reader.nextInt();
             shotCoordinate = new Coordinate(xCoordinate, yCoordinate);
             isCoordinateWithinBoard = playerBoard.isCoordinateWithinBoard(shotCoordinate);
+            isCoordinateAlreadyHit = playerBoard.isCoordinateAlreadyHit(shotCoordinate);
             if (!isCoordinateWithinBoard) {
                 System.out.println("Coordinate out of board!");
+            }
+            if (isCoordinateAlreadyHit) {
+                System.out.println("You have already hit this coordinate!");
             }
         }
         playerBoard.shoot(shotCoordinate);
@@ -176,13 +201,13 @@ public class Game {
         BoardConstraints defaultBoardConstraints = new BoardConstraints(defaultSizeX, defaultSizeY);
         BoardConfiguration boardConfiguration = new BoardConfiguration(defaultBoardConstraints);
         Carrier carrier = new Carrier();
-        carrier.setCoordinates(new Coordinate(0, 0), true);
+        carrier.setCoordinates(generateCoordinates(new Coordinate(0, 0), true, carrier.getLength()));
         Battleship battleship = new Battleship();
-        battleship.setCoordinates(new Coordinate(2, 0), false);
+        battleship.setCoordinates(generateCoordinates(new Coordinate(2, 0), false, battleship.getLength()));
         Cruiser cruiser = new Cruiser();
-        cruiser.setCoordinates(new Coordinate(2, 2), false);
+        cruiser.setCoordinates(generateCoordinates(new Coordinate(2, 2), false, cruiser.getLength()));
         Destroyer destroyer = new Destroyer();
-        destroyer.setCoordinates(new Coordinate(2, 4), false);
+        destroyer.setCoordinates(generateCoordinates(new Coordinate(2, 4), false, destroyer.getLength()));
         List<Ship> ships = List.of(carrier, battleship, cruiser, destroyer);
         boardConfiguration.addShips(ships);
         return boardConfiguration;
@@ -215,15 +240,16 @@ public class Game {
             }
         } while (!isConfigurationCorrect);
         for (Ship ship : ships) {
-            boolean isCoordinateCorrect = false;
-            while (!isCoordinateCorrect) {
+            boolean areCoordinatesCorrect = false;
+            while (!areCoordinatesCorrect) {
                 boolean isPlacedHorizontal = random.nextBoolean();
                 int xCoordinate = random.nextInt(sizeX - 1);
                 int yCoordinate = random.nextInt(sizeY - 1);
                 Coordinate startCoordinate = new Coordinate(xCoordinate, yCoordinate);
-                isCoordinateCorrect = randomBoardConfiguration.canSetCoordinates(startCoordinate, isPlacedHorizontal, ship.getLength());
-                if (isCoordinateCorrect) {
-                    ship.setCoordinates(startCoordinate, isPlacedHorizontal);
+                ArrayList<Coordinate> coordinates = generateCoordinates(startCoordinate, isPlacedHorizontal, ship.getLength());
+                areCoordinatesCorrect = randomBoardConfiguration.canSetCoordinates(coordinates);
+                if (areCoordinatesCorrect) {
+                    ship.setCoordinates(coordinates);
                 }
             }
         }

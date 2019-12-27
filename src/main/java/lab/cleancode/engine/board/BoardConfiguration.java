@@ -37,25 +37,27 @@ public class BoardConfiguration {
         return ships;
     }
 
-    public boolean canSetCoordinates(Coordinate startCoordinate, boolean isPlacedHorizontal, int shipLength) {
-        if (startCoordinate.getX() > boardConstraints.getSizeX()
-                || startCoordinate.getY() > boardConstraints.getSizeY()) {
+    public boolean canSetCoordinates(List<Coordinate> coordinates) {
+        if (isAnyCoordinateOutOfBoard(coordinates) || isAnyCoordinateAlreadyUsed(coordinates)) {
             return false;
-        }
-        if (isCoordinateAlreadyUsed(startCoordinate)) {
-            return false;
-        }
-        if (isPlacedHorizontal) {
-            return startCoordinate.getY() <= boardConstraints.getSizeY() - shipLength;
         } else {
-            return startCoordinate.getX() <= boardConstraints.getSizeX() - shipLength;
+            return true;
         }
     }
 
-    private boolean isCoordinateAlreadyUsed(Coordinate startCoordinate) {
+    private boolean isAnyCoordinateOutOfBoard(List<Coordinate> coordinates) {
+        return coordinates.stream().anyMatch(coordinate ->
+                coordinate.getX() < 0 && coordinate.getX() > boardConstraints.getSizeX() - 1
+                        && coordinate.getY() < 0 && coordinate.getY() > boardConstraints.getSizeY() - 1
+        );
+    }
+
+    private boolean isAnyCoordinateAlreadyUsed(List<Coordinate> coordinates) {
         return ships.stream().anyMatch(s ->
                 s.getCoordinates().stream().anyMatch(c ->
-                        c.getX() == startCoordinate.getX() && c.getY() == startCoordinate.getY()
+                        coordinates.stream().anyMatch(newC ->
+                                newC.getX() == c.getX() && newC.getY() == c.getY()
+                        )
                 )
         );
     }

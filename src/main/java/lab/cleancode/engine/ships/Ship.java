@@ -25,8 +25,8 @@ public abstract class Ship implements Cloneable {
         return coordinates;
     }
 
-    public void setCoordinates(Coordinate startCoordinate, Boolean isPlacedHorizontal) {
-        this.coordinates = generateCoordinates(startCoordinate, isPlacedHorizontal);
+    public void setCoordinates(ArrayList<Coordinate> coordinates) {
+        this.coordinates = coordinates;
     }
 
     public int getLength() {
@@ -41,28 +41,6 @@ public abstract class Ship implements Cloneable {
 
     public boolean isSunk() {
         return hitCount == length;
-    }
-
-    private ArrayList<Coordinate> generateCoordinates(
-            Coordinate startCoordinate,
-            Boolean isHorizontal
-    ) {
-        ArrayList<Coordinate> newCoordinates = new ArrayList<>();
-        newCoordinates.add(startCoordinate);
-        for (int i = 1; i <= getLength() - 1; i++) {
-            if (isHorizontal) {
-                int xCoordinate = startCoordinate.getX();
-                int yCoordinate = startCoordinate.getY() + i;
-                Coordinate nextCoordinate = new Coordinate(xCoordinate, yCoordinate);
-                newCoordinates.add(nextCoordinate);
-            } else {
-                int xCoordinate = startCoordinate.getX() + i;
-                int yCoordinate = startCoordinate.getY();
-                Coordinate nextCoordinate = new Coordinate(xCoordinate, yCoordinate);
-                newCoordinates.add(nextCoordinate);
-            }
-        }
-        return newCoordinates;
     }
 
     @Override
