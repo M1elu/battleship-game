@@ -12,9 +12,9 @@ import java.util.stream.IntStream;
 public class PlayerBoard {
 
     private BoardConstraints constraints;
-    private List<Ship> battleships;
     private FieldState[][] stateBoard;
     private FieldState[][] shotBoard;
+    private List<Ship> battleships;
 
     public FieldState[][] getStateBoard() {
         FieldState[][] copy = new FieldState[stateBoard.length][stateBoard.length];

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Ship implements Cloneable {
+
     final private String name;
     final private int length;
     private ArrayList<Coordinate> coordinates;
@@ -21,21 +22,21 @@ public abstract class Ship implements Cloneable {
         return name;
     }
 
-    public List<Coordinate> getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(ArrayList<Coordinate> coordinates) {
-        this.coordinates = coordinates;
-    }
-
     public int getLength() {
         return length;
     }
 
+    public List<Coordinate> getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(ArrayList<Coordinate> newCoordinates) {
+        coordinates = newCoordinates;
+    }
+
     public void hit() {
         if (hitCount < length) {
-            this.hitCount++;
+            hitCount++;
         }
     }
 
