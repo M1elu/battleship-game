@@ -154,12 +154,13 @@ public class Game {
             int yCoordinate = reader.nextInt();
             shotCoordinate = new Coordinate(xCoordinate, yCoordinate);
             isCoordinateWithinBoard = playerBoard.isCoordinateWithinBoard(shotCoordinate);
-            isCoordinateAlreadyHit = playerBoard.isCoordinateAlreadyHit(shotCoordinate);
             if (!isCoordinateWithinBoard) {
                 System.out.println("Coordinate out of board!");
-            }
-            if (isCoordinateAlreadyHit) {
-                System.out.println("You have already hit this coordinate!");
+            } else {
+                isCoordinateAlreadyHit = playerBoard.isCoordinateAlreadyHit(shotCoordinate);
+                if (isCoordinateAlreadyHit) {
+                    System.out.println("You have already hit this coordinate!");
+                }
             }
         }
         playerBoard.shoot(shotCoordinate);
@@ -216,8 +217,8 @@ public class Game {
     private BoardConfiguration getRandomBoardConfiguration() throws CloneNotSupportedException {
         Random random = new Random();
         int minSize = 5;
-        int maxSizeX = 15;
-        int maxSizeY = 15;
+        int maxSizeX = 10;
+        int maxSizeY = 10;
         int sizeX = random.nextInt(maxSizeX - minSize) + minSize;
         int sizeY = random.nextInt(maxSizeY - minSize) + minSize;
         BoardConstraints randomBoardConstraints = new BoardConstraints(sizeX, sizeY);
