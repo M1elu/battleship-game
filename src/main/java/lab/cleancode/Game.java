@@ -22,7 +22,7 @@ public class Game {
             while (playerBoard.getNumberOfBattleshipsLeft() > 0) {
                 play(playerBoard);
             }
-            end(playerBoard.getShotBoard());
+            end(playerBoard.getShotBoard(), playerBoard.getConstraints());
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -168,9 +168,9 @@ public class Game {
         displayBoard(playerBoard.getShotBoard(), playerBoard.getConstraints());
     }
 
-    private void end(FieldState[][] shotBoard) {
+    private void end(FieldState[][] shotBoard, BoardConstraints boardConstraints) {
         System.out.println("You sank all ships!");
-        ShotStatistics shotStatistics = new ShotStatistics(shotBoard);
+        ShotStatistics shotStatistics = new ShotStatistics(shotBoard, boardConstraints);
         displayStatistics(shotStatistics);
     }
 

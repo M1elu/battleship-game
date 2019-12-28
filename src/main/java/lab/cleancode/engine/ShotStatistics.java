@@ -1,5 +1,7 @@
 package lab.cleancode.engine;
 
+import lab.cleancode.engine.board.BoardConstraints;
+
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -8,14 +10,14 @@ public class ShotStatistics {
     private int allShotsCount;
     private int missedShotsCount;
 
-    public ShotStatistics(FieldState[][] shotBoard) {
-        this.allShotsCount = calculateAllShotsCount(shotBoard);
-        this.missedShotsCount = calculateMissedShotsCount(shotBoard);
+    public ShotStatistics(FieldState[][] shotBoard, BoardConstraints boardConstraints) {
+        this.allShotsCount = calculateAllShotsCount(shotBoard, boardConstraints);
+        this.missedShotsCount = calculateMissedShotsCount(shotBoard, boardConstraints);
     }
 
-    private int calculateMissedShotsCount(FieldState[][] shotBoard) {
+    private int calculateMissedShotsCount(FieldState[][] shotBoard, BoardConstraints boardConstraints) {
         return Arrays.stream(shotBoard).mapToInt((s) ->
-                IntStream.range(0, shotBoard.length).map((index) -> {
+                IntStream.range(0, boardConstraints.getSizeY() - 1).map((index) -> {
                             boolean condition = s[index] == FieldState.Miss;
                             return condition ? 1 : 0;
                         }
@@ -23,9 +25,9 @@ public class ShotStatistics {
         ).sum();
     }
 
-    private int calculateAllShotsCount(FieldState[][] shotBoard) {
+    private int calculateAllShotsCount(FieldState[][] shotBoard, BoardConstraints boardConstraints) {
         return Arrays.stream(shotBoard).mapToInt((fieldStates) ->
-                IntStream.range(0, shotBoard.length).map((index) -> {
+                IntStream.range(0, boardConstraints.getSizeY() - 1).map((index) -> {
                             boolean condition = fieldStates[index] == FieldState.Miss
                                     || fieldStates[index] == FieldState.Hit
                                     || fieldStates[index] == FieldState.Sunk;
