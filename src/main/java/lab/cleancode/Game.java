@@ -2,6 +2,7 @@ package lab.cleancode;
 
 import lab.cleancode.engine.*;
 import lab.cleancode.engine.board.BoardConfiguration;
+import lab.cleancode.engine.board.BoardConfigurationUtils;
 import lab.cleancode.engine.board.BoardConstraints;
 import lab.cleancode.engine.board.PlayerBoard;
 import lab.cleancode.engine.ships.*;
@@ -15,7 +16,7 @@ public class Game {
 
     public void start() {
         try {
-            PlayerBoard playerBoard = setup();
+            PlayerBoard playerBoard = setupBoard();
             System.out.println("State board:");
             displayBoard(playerBoard.getStateBoard(), playerBoard.getConstraints());
             System.out.println("Let's play!");
@@ -28,7 +29,7 @@ public class Game {
         }
     }
 
-    private PlayerBoard setup() throws CloneNotSupportedException {
+    private PlayerBoard setupBoard() throws CloneNotSupportedException {
         System.out.println("Choose setup type (custom(c), default(d), random(r)): ");
         Scanner reader = new Scanner(System.in);
         String setupType = reader.next();
@@ -46,6 +47,27 @@ public class Game {
         return new PlayerBoard(boardConfiguration);
     }
 
+    private BoardConfiguration getCustomBoardConfiguration() throws CloneNotSupportedException {
+        BoardConstraints boardConstraints = readBoardConstraints();
+        BoardConfiguration boardConfiguration;
+        boolean isBoardOverflow;
+        do {
+            boardConfiguration = new BoardConfiguration(boardConstraints);
+            List<Ship> ships = readShips();
+            isBoardOverflow = !BoardConfigurationUtils.isCapableToAddShips(
+                    ships,
+                    boardConstraints
+            );
+            if (isBoardOverflow) {
+                System.out.println("Board capacity is full. Add ships again!");
+            } else {
+                boardConfiguration.setShips(ships);
+                readShipCoordinates(boardConfiguration);
+            }
+        } while (isBoardOverflow);
+        return boardConfiguration;
+    }
+
     private BoardConstraints readBoardConstraints() {
         Scanner reader = new Scanner(System.in);
         System.out.println("Let's configure board!");
@@ -54,15 +76,6 @@ public class Game {
         System.out.println("Enter size Y of board:");
         int sizeY = reader.nextInt();
         return new BoardConstraints(sizeX, sizeY);
-    }
-
-    private List<Ship> getDefaultShips() {
-        return List.of(
-                new Carrier(),
-                new Battleship(),
-                new Cruiser(),
-                new Destroyer()
-        );
     }
 
     private List<Ship> readShips() throws CloneNotSupportedException {
@@ -79,7 +92,7 @@ public class Game {
         return newShips;
     }
 
-    private void setShipCoordinates(BoardConfiguration boardConfiguration) {
+    private void readShipCoordinates(BoardConfiguration boardConfiguration) {
         Scanner reader = new Scanner(System.in);
         List<Ship> ships = boardConfiguration.getShips();
         for (Ship ship : ships) {
@@ -101,6 +114,143 @@ public class Game {
                 }
             }
         }
+    }
+
+    private BoardConfiguration getRandomBoardConfiguration() throws CloneNotSupportedException {
+        BoardConstraints boardConstraints = getRandomBoardConstraints();
+        BoardConfiguration boardConfiguration = new BoardConfiguration(boardConstraints);
+        boolean isBoardOverflow;
+        do {
+            List<Ship> ships = getRandomShips();
+            isBoardOverflow = !BoardConfigurationUtils.isCapableToAddShips(ships, boardConstraints);
+            if (isBoardOverflow) {
+                System.out.println("Board capacity is full. Add ships again!");
+            } else {
+                boardConfiguration.setShips(ships);
+                setRandomCoordinates(boardConfiguration);
+            }
+        } while (isBoardOverflow);
+        return boardConfiguration;
+    }
+
+    private void setRandomCoordinates(BoardConfiguration boardConfiguration) {
+        Random random = new Random();
+        List<Ship> ships = boardConfiguration.getShips();
+        for (Ship ship : ships) {
+            boolean areCoordinatesCorrect = false;
+            while (!areCoordinatesCorrect) {
+                boolean isPlacedHorizontal = random.nextBoolean();
+                int boardSizeX = boardConfiguration.getBoardConstraints().getSizeX();
+                int boardSizeY = boardConfiguration.getBoardConstraints().getSizeY();
+                int xCoordinate = random.nextInt(boardSizeX - 1);
+                int yCoordinate = random.nextInt(boardSizeY - 1);
+                Coordinate startCoordinate = new Coordinate(xCoordinate, yCoordinate);
+                ArrayList<Coordinate> coordinates = generateCoordinates(startCoordinate, isPlacedHorizontal, ship.getLength());
+                areCoordinatesCorrect = boardConfiguration.canSetCoordinates(coordinates);
+                if (areCoordinatesCorrect) {
+                    ship.setCoordinates(coordinates);
+                }
+            }
+        }
+    }
+
+    private List<Ship> getRandomShips() throws CloneNotSupportedException {
+        Random random = new Random();
+        List<Ship> randomShips = new ArrayList<>();
+        List<Ship> defaultShips = getDefaultShips();
+        for (Ship defaultShip : defaultShips) {
+            int count = random.nextInt() % 4;
+            for (int j = 0; j < count; j++) {
+                randomShips.add(defaultShip.clone());
+            }
+        }
+        return randomShips;
+    }
+
+    private BoardConstraints getRandomBoardConstraints() {
+        Random random = new Random();
+        int minSize = 5;
+        int maxSizeX = 10;
+        int maxSizeY = 10;
+        int sizeX = random.nextInt(maxSizeX - minSize) + minSize;
+        int sizeY = random.nextInt(maxSizeY - minSize) + minSize;
+        return new BoardConstraints(sizeX, sizeY);
+    }
+
+    private BoardConfiguration getDefaultBoardConfiguration() {
+        int defaultSizeX = 10;
+        int defaultSizeY = 10;
+        BoardConstraints defaultBoardConstraints =
+                new BoardConstraints(defaultSizeX, defaultSizeY);
+        BoardConfiguration boardConfiguration =
+                new BoardConfiguration(defaultBoardConstraints);
+        boardConfiguration.setShips(getExampleShips());
+        return boardConfiguration;
+    }
+
+    private List<Ship> getExampleShips() {
+        Carrier carrier = createExampleCarrier();
+        Battleship battleship = createExampleBattleship();
+        Cruiser cruiser = createExampleCruiser();
+        Destroyer destroyer = createExampleDestroyer();
+        return List.of(carrier, battleship, cruiser, destroyer);
+    }
+
+    private Carrier createExampleCarrier() {
+        Carrier carrier = new Carrier();
+        Coordinate carrierStartCoordinate = new Coordinate(0, 0);
+        ArrayList<Coordinate> carrierCoordinates = generateCoordinates(
+                carrierStartCoordinate,
+                true,
+                carrier.getLength()
+        );
+        carrier.setCoordinates(carrierCoordinates);
+        return carrier;
+    }
+
+    private Battleship createExampleBattleship() {
+        Battleship battleship = new Battleship();
+        Coordinate battleshipStartCoordinate = new Coordinate(2, 0);
+        ArrayList<Coordinate> battleshipCoordinates = generateCoordinates(
+                battleshipStartCoordinate,
+                false,
+                battleship.getLength()
+        );
+        battleship.setCoordinates(battleshipCoordinates);
+        return battleship;
+    }
+
+    private Cruiser createExampleCruiser() {
+        Cruiser cruiser = new Cruiser();
+        Coordinate cruiserStartCoordinate = new Coordinate(2, 2);
+        ArrayList<Coordinate> cruiserCoordinates = generateCoordinates(
+                cruiserStartCoordinate,
+                false,
+                cruiser.getLength()
+        );
+        cruiser.setCoordinates(cruiserCoordinates);
+        return cruiser;
+    }
+
+    private Destroyer createExampleDestroyer() {
+        Destroyer destroyer = new Destroyer();
+        Coordinate destroyerStartCoordinate = new Coordinate(2, 4);
+        ArrayList<Coordinate> destroyerCoordinates = generateCoordinates(
+                destroyerStartCoordinate,
+                false,
+                destroyer.getLength()
+        );
+        destroyer.setCoordinates(destroyerCoordinates);
+        return destroyer;
+    }
+
+    private List<Ship> getDefaultShips() {
+        return List.of(
+                new Carrier(),
+                new Battleship(),
+                new Cruiser(),
+                new Destroyer()
+        );
     }
 
     private ArrayList<Coordinate> generateCoordinates(Coordinate startCoordinate, boolean isPlacedHorizontal, int shipLength) {
@@ -134,8 +284,8 @@ public class Game {
                     System.out.print("M ");
                 } else if (state == FieldState.Hit) {
                     System.out.print("H ");
-                } else {
-                    System.out.print("S ");
+                } else if (state == FieldState.Sunk) {
+                    System.out.print("X ");
                 }
             }
             System.out.println();
@@ -177,83 +327,5 @@ public class Game {
     private void displayStatistics(ShotStatistics shotStatistics) {
         System.out.println("All shots: " + shotStatistics.getAllShotsCount());
         System.out.println("Missed shots: " + shotStatistics.getMissedShotsCount());
-    }
-
-    private BoardConfiguration getCustomBoardConfiguration() throws CloneNotSupportedException {
-        BoardConstraints boardConstraints = readBoardConstraints();
-        BoardConfiguration boardConfiguration = new BoardConfiguration(boardConstraints);
-        Boolean isConfigurationCorrect;
-        do {
-            List<Ship> ships = readShips();
-            isConfigurationCorrect = boardConfiguration.canAddShips(ships);
-            if (!isConfigurationCorrect) {
-                System.out.println("Board capacity is full. Add ships again!");
-            } else {
-                boardConfiguration.addShips(ships);
-            }
-        } while (!isConfigurationCorrect);
-        setShipCoordinates(boardConfiguration);
-        return boardConfiguration;
-    }
-
-    private BoardConfiguration getDefaultBoardConfiguration() {
-        int defaultSizeX = 10;
-        int defaultSizeY = 10;
-        BoardConstraints defaultBoardConstraints = new BoardConstraints(defaultSizeX, defaultSizeY);
-        BoardConfiguration boardConfiguration = new BoardConfiguration(defaultBoardConstraints);
-        Carrier carrier = new Carrier();
-        carrier.setCoordinates(generateCoordinates(new Coordinate(0, 0), true, carrier.getLength()));
-        Battleship battleship = new Battleship();
-        battleship.setCoordinates(generateCoordinates(new Coordinate(2, 0), false, battleship.getLength()));
-        Cruiser cruiser = new Cruiser();
-        cruiser.setCoordinates(generateCoordinates(new Coordinate(2, 2), false, cruiser.getLength()));
-        Destroyer destroyer = new Destroyer();
-        destroyer.setCoordinates(generateCoordinates(new Coordinate(2, 4), false, destroyer.getLength()));
-        List<Ship> ships = List.of(carrier, battleship, cruiser, destroyer);
-        boardConfiguration.addShips(ships);
-        return boardConfiguration;
-    }
-
-    private BoardConfiguration getRandomBoardConfiguration() throws CloneNotSupportedException {
-        Random random = new Random();
-        int minSize = 5;
-        int maxSizeX = 10;
-        int maxSizeY = 10;
-        int sizeX = random.nextInt(maxSizeX - minSize) + minSize;
-        int sizeY = random.nextInt(maxSizeY - minSize) + minSize;
-        BoardConstraints randomBoardConstraints = new BoardConstraints(sizeX, sizeY);
-        BoardConfiguration randomBoardConfiguration = new BoardConfiguration(randomBoardConstraints);
-        List<Ship> ships = new ArrayList<>();
-        Boolean isConfigurationCorrect;
-        do {
-            List<Ship> defaultShips = getDefaultShips();
-            for (Ship defaultShip : defaultShips) {
-                int count = random.nextInt() % 4;
-                for (int j = 0; j < count; j++) {
-                    ships.add(defaultShip.clone());
-                }
-            }
-            isConfigurationCorrect = randomBoardConfiguration.canAddShips(ships);
-            if (!isConfigurationCorrect) {
-                System.out.println("Board capacity is full. Add ships again!");
-            } else {
-                randomBoardConfiguration.addShips(ships);
-            }
-        } while (!isConfigurationCorrect);
-        for (Ship ship : ships) {
-            boolean areCoordinatesCorrect = false;
-            while (!areCoordinatesCorrect) {
-                boolean isPlacedHorizontal = random.nextBoolean();
-                int xCoordinate = random.nextInt(sizeX - 1);
-                int yCoordinate = random.nextInt(sizeY - 1);
-                Coordinate startCoordinate = new Coordinate(xCoordinate, yCoordinate);
-                ArrayList<Coordinate> coordinates = generateCoordinates(startCoordinate, isPlacedHorizontal, ship.getLength());
-                areCoordinatesCorrect = randomBoardConfiguration.canSetCoordinates(coordinates);
-                if (areCoordinatesCorrect) {
-                    ship.setCoordinates(coordinates);
-                }
-            }
-        }
-        return randomBoardConfiguration;
     }
 }

@@ -16,17 +16,9 @@ public class BoardConfiguration {
         this.ships = new ArrayList<>();
     }
 
-    public Boolean canAddShips(List<Ship> newShips) {
-        boolean isAnyShipTooLong = isAnyShipTooLong(newShips);
-        if (isAnyShipTooLong) return false;
-        int maxCells = boardConstraints.getSizeX() * boardConstraints.getSizeY();
-        int shipCells = ships.stream().mapToInt(Ship::getLength).sum();
-        int newShipCells = newShips.stream().mapToInt(Ship::getLength).sum();
-        return shipCells + newShipCells < maxCells;
-    }
-
-    public void addShips(List<Ship> newShips) {
-        if (canAddShips(newShips)) ships.addAll(newShips);
+    public void setShips(List<Ship> newShips) {
+        ships.clear();
+        ships.addAll(newShips);
     }
 
     public BoardConstraints getBoardConstraints() {
@@ -35,13 +27,6 @@ public class BoardConfiguration {
 
     public List<Ship> getShips() {
         return ships;
-    }
-
-    private boolean isAnyShipTooLong(List<Ship> newShips) {
-        return newShips.stream().anyMatch(s ->
-                s.getLength() > boardConstraints.getSizeX()
-                        || s.getLength() > boardConstraints.getSizeY()
-        );
     }
 
     public boolean canSetCoordinates(List<Coordinate> coordinates) {
