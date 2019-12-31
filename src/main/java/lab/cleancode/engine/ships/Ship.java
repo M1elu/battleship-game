@@ -5,11 +5,11 @@ import lab.cleancode.engine.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Ship implements Cloneable {
+public class Ship implements Cloneable {
 
     final private String name;
     final private int length;
-    private ArrayList<Coordinate> coordinates;
+    private List<Coordinate> coordinates;
     private int hitCount = 0;
 
     public Ship(String name, int length) {
@@ -30,7 +30,7 @@ public abstract class Ship implements Cloneable {
         return coordinates;
     }
 
-    public void setCoordinates(ArrayList<Coordinate> newCoordinates) {
+    public void setCoordinates(List<Coordinate> newCoordinates) {
         coordinates = newCoordinates;
     }
 
@@ -44,8 +44,9 @@ public abstract class Ship implements Cloneable {
         return hitCount == length;
     }
 
-    @Override
-    public Ship clone() throws CloneNotSupportedException {
-        return (Ship) super.clone();
+    public Ship clone() {
+        Ship ship = new Ship(this.name, this.length);
+        ship.setCoordinates(new ArrayList<>(this.coordinates));
+        return ship;
     }
 }
