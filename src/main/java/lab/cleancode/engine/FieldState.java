@@ -1,7 +1,5 @@
 package lab.cleancode.engine;
 
 public enum FieldState {
-    Clear,
-    BattleshipPart,
-    SunkBattleshipPart
+    Idle, Ship, Miss, Hit, Sunk
 }

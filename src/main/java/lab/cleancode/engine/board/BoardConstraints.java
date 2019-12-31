@@ -1,10 +1,11 @@
-package lab.cleancode.engine;
+package lab.cleancode.engine.board;
 
-public class ShipSize {
-    final private int sizeX;
-    final private int sizeY;
+public class BoardConstraints {
 
-    public ShipSize(int sizeX, int sizeY) {
+    private int sizeX;
+    private int sizeY;
+
+    public BoardConstraints(int sizeX, int sizeY) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
     }
