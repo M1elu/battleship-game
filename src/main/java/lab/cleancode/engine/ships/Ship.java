@@ -5,7 +5,7 @@ import lab.cleancode.engine.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ship implements Cloneable {
+public class Ship {
 
     final private String name;
     final private int length;

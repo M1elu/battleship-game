@@ -14,9 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static lab.cleancode.engine.board.BoardConfigurationUtils.isCapableToAddShips;
+
 public class DataGenerator {
-    
-    private DataGenerator() {}
+
+    private DataGenerator() {
+    }
 
     public static List<Ship> getRandomShips() {
         Random random = new Random();
@@ -42,12 +45,10 @@ public class DataGenerator {
     }
 
     public static BoardConfiguration getDefaultBoardConfiguration() {
-        int defaultSizeX = 10;
-        int defaultSizeY = 10;
-        BoardConstraints defaultBoardConstraints =
-                new BoardConstraints(defaultSizeX, defaultSizeY);
-        BoardConfiguration boardConfiguration =
-                new BoardConfiguration(defaultBoardConstraints);
+        int sizeX = 10;
+        int sizeY = 10;
+        BoardConstraints boardConstraints = new BoardConstraints(sizeX, sizeY);
+        BoardConfiguration boardConfiguration = new BoardConfiguration(boardConstraints);
         boardConfiguration.setShips(getExampleShips());
         return boardConfiguration;
     }
@@ -62,49 +63,49 @@ public class DataGenerator {
 
     public static Carrier createExampleCarrier() {
         Carrier carrier = new Carrier();
-        Coordinate carrierStartCoordinate = new Coordinate(0, 0);
-        ArrayList<Coordinate> carrierCoordinates = generateCoordinates(
-                carrierStartCoordinate,
+        Coordinate startCoordinate = new Coordinate(0, 0);
+        ArrayList<Coordinate> coordinates = generateCoordinates(
+                startCoordinate,
                 true,
                 carrier.getLength()
         );
-        carrier.setCoordinates(carrierCoordinates);
+        carrier.setCoordinates(coordinates);
         return carrier;
     }
 
     public static Battleship createExampleBattleship() {
         Battleship battleship = new Battleship();
-        Coordinate battleshipStartCoordinate = new Coordinate(2, 0);
-        ArrayList<Coordinate> battleshipCoordinates = generateCoordinates(
-                battleshipStartCoordinate,
+        Coordinate startCoordinate = new Coordinate(2, 0);
+        ArrayList<Coordinate> coordinates = generateCoordinates(
+                startCoordinate,
                 false,
                 battleship.getLength()
         );
-        battleship.setCoordinates(battleshipCoordinates);
+        battleship.setCoordinates(coordinates);
         return battleship;
     }
 
     public static Cruiser createExampleCruiser() {
         Cruiser cruiser = new Cruiser();
-        Coordinate cruiserStartCoordinate = new Coordinate(2, 2);
-        ArrayList<Coordinate> cruiserCoordinates = generateCoordinates(
-                cruiserStartCoordinate,
+        Coordinate startCoordinate = new Coordinate(2, 2);
+        ArrayList<Coordinate> coordinates = generateCoordinates(
+                startCoordinate,
                 false,
                 cruiser.getLength()
         );
-        cruiser.setCoordinates(cruiserCoordinates);
+        cruiser.setCoordinates(coordinates);
         return cruiser;
     }
 
     public static Destroyer createExampleDestroyer() {
         Destroyer destroyer = new Destroyer();
-        Coordinate destroyerStartCoordinate = new Coordinate(2, 4);
-        ArrayList<Coordinate> destroyerCoordinates = generateCoordinates(
-                destroyerStartCoordinate,
+        Coordinate startCoordinate = new Coordinate(2, 4);
+        ArrayList<Coordinate> coordinates = generateCoordinates(
+                startCoordinate,
                 false,
                 destroyer.getLength()
         );
-        destroyer.setCoordinates(destroyerCoordinates);
+        destroyer.setCoordinates(coordinates);
         return destroyer;
     }
 
@@ -117,7 +118,11 @@ public class DataGenerator {
         );
     }
 
-    public static ArrayList<Coordinate> generateCoordinates(Coordinate startCoordinate, boolean isPlacedHorizontal, int shipLength) {
+    public static ArrayList<Coordinate> generateCoordinates(
+            Coordinate startCoordinate,
+            boolean isPlacedHorizontal,
+            int shipLength
+    ) {
         ArrayList<Coordinate> newCoordinates = new ArrayList<>();
         newCoordinates.add(startCoordinate);
         for (int i = 1; i <= shipLength - 1; i++) {
@@ -142,7 +147,7 @@ public class DataGenerator {
         boolean isBoardOverflow;
         do {
             List<Ship> ships = getRandomShips();
-            isBoardOverflow = !BoardConfigurationUtils.isCapableToAddShips(ships, boardConstraints);
+            isBoardOverflow = !isCapableToAddShips(ships, boardConstraints);
             if (!isBoardOverflow) {
                 boardConfiguration.setShips(ships);
                 setRandomCoordinates(boardConfiguration);
@@ -163,7 +168,11 @@ public class DataGenerator {
                 int xCoordinate = random.nextInt(boardSizeX - 1);
                 int yCoordinate = random.nextInt(boardSizeY - 1);
                 Coordinate startCoordinate = new Coordinate(xCoordinate, yCoordinate);
-                ArrayList<Coordinate> coordinates = generateCoordinates(startCoordinate, isPlacedHorizontal, ship.getLength());
+                ArrayList<Coordinate> coordinates = generateCoordinates(
+                        startCoordinate,
+                        isPlacedHorizontal,
+                        ship.getLength()
+                );
                 areCoordinatesCorrect = boardConfiguration.canSetCoordinates(coordinates);
                 if (areCoordinatesCorrect) {
                     ship.setCoordinates(coordinates);

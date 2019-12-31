@@ -15,7 +15,10 @@ public class ShotStatistics {
         this.missedShotsCount = calculateMissedShotsCount(shotBoard, boardConstraints);
     }
 
-    private int calculateMissedShotsCount(FieldState[][] shotBoard, BoardConstraints boardConstraints) {
+    private int calculateMissedShotsCount(
+            FieldState[][] shotBoard,
+            BoardConstraints boardConstraints
+    ) {
         return Arrays.stream(shotBoard).mapToInt((s) ->
                 IntStream.range(0, boardConstraints.getSizeY() - 1).map((index) -> {
                             boolean condition = s[index] == FieldState.Miss;
@@ -25,7 +28,10 @@ public class ShotStatistics {
         ).sum();
     }
 
-    private int calculateAllShotsCount(FieldState[][] shotBoard, BoardConstraints boardConstraints) {
+    private int calculateAllShotsCount(
+            FieldState[][] shotBoard,
+            BoardConstraints boardConstraints
+    ) {
         return Arrays.stream(shotBoard).mapToInt((fieldStates) ->
                 IntStream.range(0, boardConstraints.getSizeY() - 1).map((index) -> {
                             boolean condition = fieldStates[index] == FieldState.Miss

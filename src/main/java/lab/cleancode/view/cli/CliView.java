@@ -146,19 +146,29 @@ public class CliView implements GameView {
         for (Ship ship : ships) {
             boolean areCoordinatesCorrect = false;
             while (!areCoordinatesCorrect) {
-                System.out.println("Do you want place " + ship.getName() + " horizontally(true) or vertically(false)?");
+                System.out.println(
+                        "Do you want place " + ship.getName()
+                                + " horizontally(true) or vertically(false)?"
+                );
                 boolean isPlacedHorizontal = reader.nextBoolean();
                 System.out.println("Enter x coordinate for " + ship.getName());
                 int xCoordinate = reader.nextInt();
                 System.out.println("Enter y coordinate for " + ship.getName());
                 int yCoordinate = reader.nextInt();
                 Coordinate startCoordinate = new Coordinate(xCoordinate, yCoordinate);
-                ArrayList<Coordinate> coordinates = generateCoordinates(startCoordinate, isPlacedHorizontal, ship.getLength());
+                ArrayList<Coordinate> coordinates = generateCoordinates(
+                        startCoordinate,
+                        isPlacedHorizontal,
+                        ship.getLength()
+                );
                 areCoordinatesCorrect = boardConfiguration.canSetCoordinates(coordinates);
                 if (areCoordinatesCorrect) {
                     ship.setCoordinates(coordinates);
                 } else {
-                    System.out.println("It's not possible to place ship this way. Wrong coordinate!");
+                    System.out.println(
+                            "It's not possible to place ship this way. " +
+                                    "Wrong coordinate!"
+                    );
                 }
             }
         }
