@@ -2,12 +2,7 @@ package lab.cleancode.view;
 
 import lab.cleancode.engine.Coordinate;
 import lab.cleancode.engine.board.BoardConfiguration;
-import lab.cleancode.engine.board.BoardConfigurationUtils;
 import lab.cleancode.engine.board.BoardConstraints;
-import lab.cleancode.engine.ships.Battleship;
-import lab.cleancode.engine.ships.Carrier;
-import lab.cleancode.engine.ships.Cruiser;
-import lab.cleancode.engine.ships.Destroyer;
 import lab.cleancode.engine.ships.Ship;
 
 import java.util.ArrayList;
@@ -54,15 +49,15 @@ public class DataGenerator {
     }
 
     public static List<Ship> getExampleShips() {
-        Carrier carrier = createExampleCarrier();
-        Battleship battleship = createExampleBattleship();
-        Cruiser cruiser = createExampleCruiser();
-        Destroyer destroyer = createExampleDestroyer();
+        Ship carrier = createExampleCarrier();
+        Ship battleship = createExampleBattleship();
+        Ship cruiser = createExampleCruiser();
+        Ship destroyer = createExampleDestroyer();
         return List.of(carrier, battleship, cruiser, destroyer);
     }
 
-    public static Carrier createExampleCarrier() {
-        Carrier carrier = new Carrier();
+    public static Ship createExampleCarrier() {
+        Ship carrier = new Ship("Carrier", 5);
         Coordinate startCoordinate = new Coordinate(0, 0);
         ArrayList<Coordinate> coordinates = generateCoordinates(
                 startCoordinate,
@@ -73,8 +68,8 @@ public class DataGenerator {
         return carrier;
     }
 
-    public static Battleship createExampleBattleship() {
-        Battleship battleship = new Battleship();
+    public static Ship createExampleBattleship() {
+        Ship battleship = new Ship("Battleship", 4);
         Coordinate startCoordinate = new Coordinate(2, 0);
         ArrayList<Coordinate> coordinates = generateCoordinates(
                 startCoordinate,
@@ -85,8 +80,8 @@ public class DataGenerator {
         return battleship;
     }
 
-    public static Cruiser createExampleCruiser() {
-        Cruiser cruiser = new Cruiser();
+    public static Ship createExampleCruiser() {
+        Ship cruiser = new Ship("Cruiser", 3);
         Coordinate startCoordinate = new Coordinate(2, 2);
         ArrayList<Coordinate> coordinates = generateCoordinates(
                 startCoordinate,
@@ -97,8 +92,8 @@ public class DataGenerator {
         return cruiser;
     }
 
-    public static Destroyer createExampleDestroyer() {
-        Destroyer destroyer = new Destroyer();
+    public static Ship createExampleDestroyer() {
+        Ship destroyer = new Ship("Destroyer", 2);
         Coordinate startCoordinate = new Coordinate(2, 4);
         ArrayList<Coordinate> coordinates = generateCoordinates(
                 startCoordinate,
@@ -111,10 +106,10 @@ public class DataGenerator {
 
     public static List<Ship> getDefaultShips() {
         return List.of(
-                new Carrier(),
-                new Battleship(),
-                new Cruiser(),
-                new Destroyer()
+                new Ship("Carrier", 5),
+                new Ship("Battleship", 4),
+                new Ship("Cruiser", 3),
+                new Ship("Destroyer", 2)
         );
     }
 
