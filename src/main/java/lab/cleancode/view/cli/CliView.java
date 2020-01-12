@@ -7,7 +7,7 @@ import lab.cleancode.engine.board.BoardConfiguration;
 import lab.cleancode.engine.board.BoardConfigurationUtils;
 import lab.cleancode.engine.board.BoardConstraints;
 import lab.cleancode.engine.board.PlayerBoard;
-import lab.cleancode.engine.ships.Ship;
+import lab.cleancode.engine.Ship;
 import lab.cleancode.view.GameView;
 
 import java.util.ArrayList;

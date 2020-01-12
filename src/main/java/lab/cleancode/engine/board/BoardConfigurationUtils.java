@@ -1,6 +1,6 @@
 package lab.cleancode.engine.board;
 
-import lab.cleancode.engine.ships.Ship;
+import lab.cleancode.engine.Ship;
 
 import java.util.List;
 

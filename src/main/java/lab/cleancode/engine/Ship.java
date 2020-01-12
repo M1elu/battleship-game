@@ -1,6 +1,4 @@
-package lab.cleancode.engine.ships;
-
-import lab.cleancode.engine.Coordinate;
+package lab.cleancode.engine;
 
 import java.util.ArrayList;
 import java.util.List;

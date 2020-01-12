@@ -3,7 +3,7 @@ package lab.cleancode.view;
 import lab.cleancode.engine.Coordinate;
 import lab.cleancode.engine.board.BoardConfiguration;
 import lab.cleancode.engine.board.BoardConstraints;
-import lab.cleancode.engine.ships.Ship;
+import lab.cleancode.engine.Ship;
 
 import java.util.ArrayList;
 import java.util.List;
