@@ -24,3 +24,11 @@ target/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+#sonar-data
+postgresql
+postgresql_data
+sonarqube_bundled-plugins
+sonarqube_conf
+sonarqube_extensions
+sonarqube_data
