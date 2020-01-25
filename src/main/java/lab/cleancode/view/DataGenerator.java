@@ -12,16 +12,16 @@ import java.util.Random;
 import static lab.cleancode.engine.board.BoardConfigurationUtils.isCapableToAddShips;
 
 public class DataGenerator {
+    private static final Random RANDOM = new Random();
 
     private DataGenerator() {
     }
 
     public static List<Ship> getRandomShips() {
-        Random random = new Random();
         List<Ship> randomShips = new ArrayList<>();
         List<Ship> defaultShips = getDefaultShips();
         for (Ship defaultShip : defaultShips) {
-            int count = random.nextInt() % 4;
+            int count = RANDOM.nextInt() % 4;
             for (int j = 0; j < count; j++) {
                 randomShips.add(defaultShip.clone());
             }
@@ -30,12 +30,11 @@ public class DataGenerator {
     }
 
     public static BoardConstraints getRandomBoardConstraints() {
-        Random random = new Random();
         int minSize = 5;
         int maxSizeX = 10;
         int maxSizeY = 10;
-        int sizeX = random.nextInt(maxSizeX - minSize) + minSize;
-        int sizeY = random.nextInt(maxSizeY - minSize) + minSize;
+        int sizeX = RANDOM.nextInt(maxSizeX - minSize) + minSize;
+        int sizeY = RANDOM.nextInt(maxSizeY - minSize) + minSize;
         return new BoardConstraints(sizeX, sizeY);
     }
 
@@ -116,8 +115,7 @@ public class DataGenerator {
     public static ArrayList<Coordinate> generateCoordinates(
             Coordinate startCoordinate,
             boolean isPlacedHorizontal,
-            int shipLength
-    ) {
+            int shipLength) {
         ArrayList<Coordinate> newCoordinates = new ArrayList<>();
         newCoordinates.add(startCoordinate);
         for (int i = 1; i <= shipLength - 1; i++) {
@@ -152,16 +150,15 @@ public class DataGenerator {
     }
 
     private static void setRandomCoordinates(BoardConfiguration boardConfiguration) {
-        Random random = new Random();
         List<Ship> ships = boardConfiguration.getShips();
         for (Ship ship : ships) {
             boolean areCoordinatesCorrect = false;
             while (!areCoordinatesCorrect) {
-                boolean isPlacedHorizontal = random.nextBoolean();
+                boolean isPlacedHorizontal = RANDOM.nextBoolean();
                 int boardSizeX = boardConfiguration.getBoardConstraints().getSizeX();
                 int boardSizeY = boardConfiguration.getBoardConstraints().getSizeY();
-                int xCoordinate = random.nextInt(boardSizeX - 1);
-                int yCoordinate = random.nextInt(boardSizeY - 1);
+                int xCoordinate = RANDOM.nextInt(boardSizeX - 1);
+                int yCoordinate = RANDOM.nextInt(boardSizeY - 1);
                 Coordinate startCoordinate = new Coordinate(xCoordinate, yCoordinate);
                 ArrayList<Coordinate> coordinates = generateCoordinates(
                         startCoordinate,
